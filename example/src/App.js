@@ -1,10 +1,48 @@
 import React from 'react'
+import { connect } from 'react-redux';
 
-import { ExampleComponent } from 'redux-di-container'
-import 'redux-di-container/dist/index.css'
+import { dogsReducer, counterReducer } from './services/services';
 
-const App = () => {
-  return <ExampleComponent text="Create React Library Example 😄" />
+const App = (props) => {
+  const {
+    count,
+  } = props;
+
+  const handleIncrementClick = () => {
+    counterReducer.incrementAction();
+  };
+
+  const handleDecrementClick = () => {
+    counterReducer.decrementAction();
+  };
+
+  return (
+    <div className='container'>
+      <div className='counter-block'>
+        <button
+          onClick={handleIncrementClick}
+        >
+          Increment
+        </button>
+        <span className='counter-label'>
+          {count}
+        </span>
+        <button
+          onClick={handleDecrementClick}
+        >
+          Decrement
+        </button>
+      </div>
+    </div>
+  );
 }
 
-export default App
+const mapStateToProps = state => {
+  return {
+    count: counterReducer.$count(state),
+  };
+};
+
+export default connect(
+  mapStateToProps
+)(App);

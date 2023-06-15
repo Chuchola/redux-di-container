@@ -1,6 +1,9 @@
-import React from 'react'
-import styles from './styles.module.css'
+import BaseReducer from './services/BaseReducer';
+import WithStore from './services/WithStore';
+import ReduxDIContainer from './services/ReduxDIContainer';
 
-export const ExampleComponent = ({ text }) => {
-  return <div className={styles.test}>Example Component: {text}</div>
-}
+export {
+  BaseReducer,
+  WithStore,
+  ReduxDIContainer,
+};

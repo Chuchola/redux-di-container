@@ -8,7 +8,17 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+.container {
+  display: flex;
+  flex-direction: column;
+  margin-top: 50px;
+}
+
+.counter-block {
+  align-self: center;
+}
+
+.counter-label {
+  display: inline-block;
+  margin: 0 20px;
 }
