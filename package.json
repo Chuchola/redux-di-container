@@ -1,6 +1,6 @@
 {
   "name": "redux-di-container",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Dependency injection container for redux",
   "author": " Yura Chuchola",
   "license": "MIT",
@@ -22,10 +22,6 @@
     "test:watch": "react-scripts test --env=jsdom",
     "predeploy": "cd example && npm install && npm run build",
     "deploy": "gh-pages -d example/build"
-  },
-  "peerDependencies": {
-    "react": "^18.2.0",
-    "redux": "^4.2.1"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.3",
