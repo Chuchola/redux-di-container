@@ -19,7 +19,7 @@ export default class ReduxDIContainer {
     this.#container.register(registrations);
   }
 
-  applyStore(store, initialReducers) {
+  injectStore(store, initialReducers) {
     const registrations = this.#container.registrations;
     Object.keys(registrations)
       .forEach(key => {

@@ -11,7 +11,7 @@ di.registerServices([
   { key: 'dogsService', class: DogsReducer },
   { key: 'appService', class: AppService },
 ]);
-di.applyStore(store, reducers);
+di.injectStore(store, reducers);
 
 export const counterReducer = di.getService('counterService');
 export const dogsReducer = di.getService('dogsService');
