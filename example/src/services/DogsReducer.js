@@ -21,38 +21,26 @@ export default class DogsReducer extends BaseReducer {
     return this.select(state).error;
   }
 
-  fetchDogsPendingAction() {
-    return state => {
+  fetchDogs() {
+    this.dispatchAction(state => {
       state.pending = true;
       state.error = null;
-    };
-  }
-
-  fetchDogsSuccessAction(dogs) {
-    return state => {
-      state.pending = false;
-      state.dogs = dogs;
-    };
-  }
-
-  fetchDogsErrorAction(error) {
-    return state => {
-      state.pending = false;
-      state.error = error.message;
-    };
-  }
-
-  fetchDogs() {
-    this.fetchDogsPendingAction();
+    }, 'fetchDogsPending');
     return window.fetch('https://dog.ceo/api/breeds/image/random')
       .then(response => response.json())
       .then(response => {
         const dogs = [response.message];
-        this.fetchDogsSuccessAction(dogs);
+        this.dispatchAction(state => {
+          state.pending = false;
+          state.dogs = dogs;
+        }, 'fetchDogsSuccess');
         return dogs;
       })
       .catch(error => {
-        this.fetchDogsErrorAction(error.message);
+        this.dispatchAction(state => {
+          state.pending = false;
+          state.error = error.message;
+        }, 'fetchDogsError');
         throw error;
       })
     ;

@@ -22,4 +22,10 @@ export default class CounterReducer extends BaseReducer {
       state.count -= 1;
     };
   }
+
+  increment() {
+    this.dispatchAction(state => {
+      state.count += 1;
+    }, 'increment');
+  }
 }

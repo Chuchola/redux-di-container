@@ -8,7 +8,7 @@ class AppService extends WithStore {
   }
 
   getDogs() {
-    this.counterReducer.incrementAction();
+    this.counterReducer.increment();
     this.dogsReducer.fetchDogs();
   }
 }
