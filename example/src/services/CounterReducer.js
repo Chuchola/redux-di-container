@@ -28,4 +28,8 @@ export default class CounterReducer extends BaseReducer {
       state.count += 1;
     }, 'increment');
   }
+
+  decrement() {
+    this.dispatch({ type: 'some-action' });
+  }
 }

@@ -69,14 +69,6 @@ class BaseReducer {
     return state[this.#serviceName];
   }
 
-  getState() {
-    if (this.#store) {
-      return this.#store.getState();
-    } else {
-      throw new Error('Store does not apply');
-    }
-  }
-
   /**
    * Dispatch action.
    *
@@ -88,6 +80,22 @@ class BaseReducer {
       type: `${this.#serviceName}::${TRACE_KEY}::${trace}`,
       params: [newStateFn, trace],
     });
+  }
+
+  getState() {
+    if (this.#store) {
+      return this.#store.getState();
+    } else {
+      throw new Error('Store did not apply');
+    }
+  }
+
+  dispatch(action) {
+    if (this.#store) {
+      this.#store.dispatch(action);
+    } else {
+      throw new Error('Store did not apply');
+    }
   }
 }
 

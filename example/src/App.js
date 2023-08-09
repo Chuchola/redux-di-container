@@ -15,7 +15,7 @@ const App = (props) => {
   };
 
   const handleDecrementClick = () => {
-    counterReducer.decrementAction();
+    counterReducer.decrement();
   };
 
   const handleGetRandomDog = () => {
