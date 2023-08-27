@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux';
 import { produce } from 'immer';
 import upperFirst from 'lodash.upperfirst';
+import { createSelector as reselectCreateSelector } from 'reselect';
 
 import WithStore from './WithStore';
 
@@ -71,8 +72,8 @@ class BaseReducer extends WithStore {
     this.getStore().replaceReducer(combineReducers(allReducers));
   }
 
-  select(state) {
-    return state[this.#serviceName];
+  select() {
+    return this.getState()[this.#serviceName];
   }
 
   /**
@@ -95,6 +96,10 @@ class BaseReducer extends WithStore {
     this.dispatch({
       type: `${this.#serviceName}::resetState`,
     });
+  }
+
+  createSelector(...args) {
+    return reselectCreateSelector(...args)(this.getState());
   }
 }
 

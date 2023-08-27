@@ -7,8 +7,8 @@ export default class CounterReducer extends BaseReducer {
     };
   }
 
-  $count(state) {
-    return this.select(state).count;
+  $count() {
+    return this.select().count;
   }
 
   incrementAction() {

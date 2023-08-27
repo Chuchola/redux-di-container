@@ -6,8 +6,7 @@ import { appService, dogsReducer, counterReducer } from './services/services';
 const App = (props) => {
   const {
     count,
-    dogs,
-    dogsIsPending,
+    dogsObj,
   } = props;
 
   const handleIncrementClick = () => {
@@ -69,19 +68,18 @@ const App = (props) => {
           Reset state
         </button>
         <div className='image-wrapper'>
-          {dogsIsPending && <span>Loading...</span>}
-          {(!dogsIsPending && !!dogs.length) && <img className='image' alt='' src={dogs[0]} />}
+          {dogsObj.isPending && <span>Loading...</span>}
+          {(!dogsObj.isPending && !!dogsObj.dogs.length) && <img className='image' alt='' src={dogsObj.dogs[0]} />}
         </div>
       </div>
     </div>
   );
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = () => {
   return {
-    count: counterReducer.$count(state),
-    dogs: dogsReducer.$dogs(state),
-    dogsIsPending: dogsReducer.$isPending(state),
+    count: counterReducer.$count(),
+    dogsObj: dogsReducer.$dogsObj(),
   };
 };
 

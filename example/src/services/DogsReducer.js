@@ -9,16 +9,31 @@ export default class DogsReducer extends BaseReducer {
     };
   }
 
-  $isPending(state) {
-    return this.select(state).pending;
+  $isPending() {
+    return this.select().pending;
   }
 
-  $dogs(state) {
-    return this.select(state).dogs;
+  $dogs() {
+    return this.select().dogs;
   }
 
-  $error(state) {
-    return this.select(state).error;
+  $error() {
+    return this.select().error;
+  }
+
+  $dogsObj() {
+    return this.createSelector(
+      () => this.$isPending(),
+      () => this.$dogs(),
+      () => this.$error(),
+      (isPending, dogs, error) => {
+        return {
+          isPending,
+          dogs,
+          error,
+        };
+      }
+    );
   }
 
   fetchDogs() {
