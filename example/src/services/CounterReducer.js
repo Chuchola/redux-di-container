@@ -30,6 +30,8 @@ export default class CounterReducer extends BaseReducer {
   }
 
   decrement() {
-    this.dispatch({ type: 'some-action' });
+    this.dispatchAction(state => {
+      state.count -= 1;
+    }, 'decrement');
   }
 }

@@ -1,8 +1,5 @@
-import { WithStore } from 'redux-di-container';
-
-class AppService extends WithStore {
+class AppService {
   constructor (opts) {
-    super();
     this.counterReducer = opts.counterService;
     this.dogsReducer = opts.dogsService;
   }

@@ -2,55 +2,61 @@ import { combineReducers } from 'redux';
 import { produce } from 'immer';
 import upperFirst from 'lodash.upperfirst';
 
+import WithStore from './WithStore';
+
 let savedReducers = null;
 const ACTION_END = 'Action';
 const DISPATCH_ACTION_KEY = '#__dispatchAction';
+const RESET_STATE_ACTION_KEY = '#__resetAction';
 const TRACE_KEY = 'Trace';
 
-class BaseReducer {
-  #store = null;
+class BaseReducer extends WithStore {
   #cases = new Map();
   #serviceName = null;
 
-  __registerAction(serviceKey, store, action) {
+  __registerAction(action) {
     const type = `${this.#serviceName}::${action.key}`;
     if (!this.#cases.get(type)) {
       this.#cases.set(type, (...args) => action.func.apply(this, ...args));
     }
     const instance = Object.getPrototypeOf(this);
     instance[action.key] = (...params) => {
-      store.dispatch({
+      this.dispatch({
         type,
         params,
       });
     };
   }
 
-  __registerActions(serviceKey, store) {
+  __registerActions() {
     const instance = Object.getPrototypeOf(this);
     instance[DISPATCH_ACTION_KEY] = newStateFunc => newStateFunc;
+    instance[RESET_STATE_ACTION_KEY] = () => () => instance.getInitialState();
     const actionsNames = Object
       .getOwnPropertyNames(instance)
       .filter(name => name.endsWith(ACTION_END))
     ;
     actionsNames.forEach(name => {
-      this.__registerAction(serviceKey, store, { key: name, func: instance[name] });
+      this.__registerAction({ key: name, func: instance[name] });
     });
   }
 
-  replaceReducer(serviceKey, store, initialReducers) {
+  replaceReducer(serviceKey, initialReducers) {
     this.#serviceName = upperFirst(serviceKey);
-    this.#store = store;
-    this.__registerActions(serviceKey, store);
+    this.__registerActions();
     const instance = Object.getPrototypeOf(this);
     const reducer = (...params) => {
       const state = params[0] || instance.getInitialState();
       const action = params[1];
       const { type, params: actionParams } = action;
-      const func = type.startsWith(`${this.#serviceName}::${TRACE_KEY}::`)
-        ? this.#cases.get(`${this.#serviceName}::${DISPATCH_ACTION_KEY}`)
-        : this.#cases.get(type)
-      ;
+      let func;
+      if (type.startsWith(`${this.#serviceName}::${TRACE_KEY}::`)) {
+        func = this.#cases.get(`${this.#serviceName}::${DISPATCH_ACTION_KEY}`);
+      } else if (type === `${this.#serviceName}::resetState`) {
+        func = this.#cases.get(`${this.#serviceName}::${RESET_STATE_ACTION_KEY}`);
+      } else {
+        func = this.#cases.get(type);
+      }
       return func
         ? produce(state, func.call(this, actionParams))
         : state
@@ -62,7 +68,7 @@ class BaseReducer {
       [this.#serviceName]: reducer,
     };
     savedReducers = allReducers;
-    store.replaceReducer(combineReducers(allReducers));
+    this.getStore().replaceReducer(combineReducers(allReducers));
   }
 
   select(state) {
@@ -76,26 +82,19 @@ class BaseReducer {
    * @param {string} trace Use in action type for trace in redux devtools.
    */
   dispatchAction(newStateFn, trace = 'dispatchAction') {
-    this.#store.dispatch({
+    this.dispatch({
       type: `${this.#serviceName}::${TRACE_KEY}::${trace}`,
       params: [newStateFn, trace],
     });
   }
 
-  getState() {
-    if (this.#store) {
-      return this.#store.getState();
-    } else {
-      throw new Error('Store did not apply');
-    }
-  }
-
-  dispatch(action) {
-    if (this.#store) {
-      this.#store.dispatch(action);
-    } else {
-      throw new Error('Store did not apply');
-    }
+  /**
+   * Reset service state.
+   */
+  resetState() {
+    this.dispatch({
+      type: `${this.#serviceName}::resetState`,
+    });
   }
 }
 

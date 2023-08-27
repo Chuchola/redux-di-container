@@ -13,7 +13,15 @@ export default class WithStore {
     if (this.#store) {
       return this.#store.getState();
     } else {
-      throw new Error('Store does not apply');
+      throw new Error('Store did not inject.');
+    }
+  }
+
+  dispatch(action) {
+    if (this.#store) {
+      return this.#store.dispatch(action);
+    } else {
+      throw new Error('Store did not inject.');
     }
   }
 }

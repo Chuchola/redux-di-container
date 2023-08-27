@@ -28,7 +28,7 @@ export default class ReduxDIContainer {
           service.setStore(store);
         }
         if (service instanceof BaseReducer) {
-          service.replaceReducer(key, store, initialReducers);
+          service.replaceReducer(key, initialReducers);
         }
         this.#services[key] = service;
       })
