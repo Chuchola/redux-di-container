@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import { connect } from 'react-redux';
 
 import { appService, dogsReducer, counterReducer } from './services/services';
@@ -40,8 +40,8 @@ const App = (props) => {
             Increment
           </button>
           <span className='counter-label'>
-          {count}
-        </span>
+            {count}
+          </span>
           <button
             onClick={handleDecrementClick}
           >
@@ -74,7 +74,7 @@ const App = (props) => {
       </div>
     </div>
   );
-}
+};
 
 const mapStateToProps = () => {
   return {
