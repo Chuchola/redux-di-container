@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 import { produce } from 'immer';
 import upperFirst from 'lodash.upperfirst';
-import { createSelector as reselectCreateSelector } from 'reselect';
+// import { createSelectorCreator, defaultMemoize } from 'reselect';
 
 import WithStore from './WithStore';
 
@@ -42,9 +42,28 @@ class BaseReducer extends WithStore {
     });
   }
 
+  __registerReselectSelectors() {
+    const instance = Object.getPrototypeOf(this);
+    const selectorsNames = Object
+      .getOwnPropertyNames(instance)
+      .filter(name => name.startsWith('$'))
+    ;
+    console.log('\x1b[31m@@@@@@@@@@@@@@@\x1b[0m', {
+      selectorsNames,
+      hello33: true,
+    });
+    selectorsNames.forEach(name => {
+      const args = instance[name]();
+      console.log('\x1b[31m@@@@@@@@@@@@@@@\x1b[0m', {
+        args,
+      });
+    });
+  }
+
   replaceReducer(serviceKey, initialReducers) {
     this.#serviceName = upperFirst(serviceKey);
     this.__registerActions();
+    this.__registerReselectSelectors();
     const instance = Object.getPrototypeOf(this);
     const reducer = (...params) => {
       const state = params[0] || instance.getInitialState();
@@ -72,8 +91,8 @@ class BaseReducer extends WithStore {
     this.getStore().replaceReducer(combineReducers(allReducers));
   }
 
-  select() {
-    return this.getState()[this.#serviceName];
+  select(state) {
+    return state[this.#serviceName];
   }
 
   /**
@@ -96,10 +115,6 @@ class BaseReducer extends WithStore {
     this.dispatch({
       type: `${this.#serviceName}::resetState`,
     });
-  }
-
-  createSelector(...args) {
-    return reselectCreateSelector(...args)(this.getState());
   }
 }
 

@@ -76,10 +76,11 @@ const App = (props) => {
   );
 };
 
-const mapStateToProps = () => {
+const mapStateToProps = state => {
   return {
-    count: counterReducer.$count(),
-    dogsObj: dogsReducer.$dogsObj(),
+    count: counterReducer.countSelect(state),
+    dogsObj: dogsReducer.dogsObjSelector(state),
+    // countObj: appService.$countObj(state),
   };
 };
 

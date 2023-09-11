@@ -17,6 +17,31 @@ npm install --save redux-di-container
 // Comming soon
 ```
 
+## Development
+
+You have to link the library to example project. In order to do this, open terminal and run the following commands:
+
+```bash
+$ yarn link
+$ cd example
+$ yarn link "redux-di-container"
+```
+
+Now when you make changes in library files, the changes will apply in example project.
+
+To watch library files:
+
+```bash
+$ yarn start
+```
+
+To watch example project files:
+
+```bash
+$ cd example
+$ yarn start
+```
+
 ## License
 
-MIT © [Yura Chuchola](https://github.com Yura Chuchola)
+MIT
