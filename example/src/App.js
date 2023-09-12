@@ -80,7 +80,6 @@ const mapStateToProps = state => {
   return {
     count: counterReducer.countSelect(state),
     dogsObj: dogsReducer.dogsObjSelector(state),
-    // countObj: appService.$countObj(state),
   };
 };
 

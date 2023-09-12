@@ -1,5 +1,4 @@
 import { BaseReducer } from 'redux-di-container';
-import { createSelector } from 'reselect';
 
 export default class DogsReducer extends BaseReducer {
   getInitialState() {
@@ -22,33 +21,17 @@ export default class DogsReducer extends BaseReducer {
     return this.select(state).error;
   }
 
-  $some () {
-    return [
-      state => this.isPendingSelect(state),
-      state => this.dogsSelect(state),
-      state => this.errorSelect(state),
-      (isPending, dogs, error) => {
-        return {
-          isPending,
-          dogs,
-          error,
-        };
-      },
-    ];
-  }
-
-  dogsObjSelector = createSelector([
+  dogsObjSelector = this.createSelector(
     state => this.isPendingSelect(state),
     state => this.dogsSelect(state),
     state => this.errorSelect(state),
-  ],
-  (isPending, dogs, error) => {
-    return {
-      isPending,
-      dogs,
-      error,
-    };
-  }
+    (isPending, dogs, error) => {
+      return {
+        isPending,
+        dogs,
+        error,
+      };
+    }
   );
 
   fetchDogs() {
