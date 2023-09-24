@@ -1,6 +1,11 @@
 import { BaseReducer } from 'redux-di-container';
 
 export default class DogsReducer extends BaseReducer {
+  constructor (opts) {
+    super();
+    this.dogsRestApiService = opts.dogsRestApiService;
+  }
+
   getInitialState() {
     return {
       pending: false,
@@ -39,10 +44,9 @@ export default class DogsReducer extends BaseReducer {
       state.pending = true;
       state.error = null;
     }, 'fetchDogsPending');
-    return window.fetch('https://dog.ceo/api/breeds/image/random')
-      .then(response => response.json())
+    return this.dogsRestApiService.publicAxios.get('/breeds/image/random')
       .then(response => {
-        const dogs = [response.message];
+        const dogs = [response.data.message];
         this.dispatchAction(state => {
           state.pending = false;
           state.dogs = dogs;

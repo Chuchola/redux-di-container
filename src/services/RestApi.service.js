@@ -1,12 +1,11 @@
 import axiosRetry from 'axios-retry';
 import axios from 'axios';
-import get from 'lodash/get';
 
 class AxiosBaseService {
   #instance;
 
   constructor (baseUrl) {
-    axios.create({
+    this.#instance = axios.create({
       baseURL: baseUrl,
     });
   }
@@ -17,39 +16,36 @@ class AxiosBaseService {
 }
 
 export class PublicAxiosService extends AxiosBaseService {
-  constructor ({ restApiEndpoint }) {
-    super(restApiEndpoint);
-  }
 }
 
 export class SecureAxiosService extends AxiosBaseService {
-  constructor (opts) {
-    super(opts.restApiEndpoint);
-    this.localStorage = opts.localStorageService;
+  constructor (serviceConfig) {
+    super(serviceConfig.baseUrl);
+    this.serviceConfig = serviceConfig;
     this.useAuthorizationInterceptor();
-    axiosRetry(this.instance, {
-      retries: 1,
-      retryCondition: async axiosError => {
-        if (axiosError.response.status === 401) {
-          try {
-            const refreshTokenResponse = await this.refreshToken(axiosError);
-            const token = refreshTokenResponse.data;
-            axiosError.response.config.headers['Authorization'] = `Bearer ${token.accessToken}`;
-            return true;
-          } catch (e) {
-            return false;
+    if (serviceConfig.refreshToken) {
+      axiosRetry(this.instance, {
+        retries: 1,
+        retryCondition: async axiosError => {
+          if (axiosError.response.status === 401) {
+            try {
+              await serviceConfig.refreshToken();
+              axiosError.response.config.headers.Authorization = serviceConfig.getAuthorizationHeaderValue();
+              return true;
+            } catch (e) {
+              return false;
+            }
           }
-        }
-      }
-    });
+        },
+      });
+    }
   }
 
   useAuthorizationInterceptor() {
     this.instance.interceptors.request.use(
       config => {
-        const accessToken = get(this.localStorage.getToken(), 'accessToken', null);
-        if (!config.headers.Authorization && accessToken) {
-          config.headers.Authorization = `Bearer ${accessToken}`;
+        if (!config.headers.Authorization) {
+          config.headers.Authorization = this.serviceConfig.getAuthorizationHeaderValue();
         }
         return config;
       },
@@ -58,38 +54,24 @@ export class SecureAxiosService extends AxiosBaseService {
       }
     );
   }
-
-  async refreshToken() {
-    const refreshToken = get(this.localStorage.getToken(), 'refreshToken', null);
-    if (!refreshToken) {
-      this.localStorage.removeToken();
-      throw new Error();
-    }
-    try {
-      const response = await axios.post(`${process.env.REACT_APP_BASE_API}/auth/refreshToken`, { refreshToken });
-      const token = response.data;
-      this.localStorage.setToken(token);
-      return response;
-    } catch (e) {
-      return false;
-    }
-  };
 }
 
 export default class RestApiService {
   #publicInstance;
   #secureInstance;
 
-  constructor (opts) {
-    this.#publicInstance = opts.publicAxiosService;
-    this.#secureInstance = opts.secureAxiosService;
+  constructor (config) {
+    this.#publicInstance = new PublicAxiosService(config.baseUrl);
+    if (config.getAuthorizationHeaderValue) {
+      this.#secureInstance = new SecureAxiosService(config);
+    }
   }
 
-  get publicInstance() {
-    return this.#publicInstance;
+  get publicAxios() {
+    return this.#publicInstance.instance;
   }
 
-  get secureInstance() {
-    return this.#secureInstance;
+  get secureAxios() {
+    return this.#secureInstance.instance;
   }
 }
