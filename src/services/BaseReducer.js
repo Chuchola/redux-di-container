@@ -42,12 +42,13 @@ class BaseReducer extends WithStore {
     });
   }
 
-  replaceReducer(serviceKey, initialReducers) {
+  replaceReducer(serviceKey, initialReducers, initialState = null) {
     this.#serviceName = upperFirst(serviceKey);
     this.__registerActions();
     const instance = Object.getPrototypeOf(this);
+    const initialSubState = initialState ? initialState[this.#serviceName] : null;
     const reducer = (...params) => {
-      const state = params[0] || instance.getInitialState();
+      const state = params[0] || initialSubState || instance.getInitialState();
       const action = params[1];
       const { type, params: actionParams } = action;
       let func;
