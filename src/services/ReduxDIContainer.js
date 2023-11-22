@@ -31,7 +31,7 @@ export default class ReduxDIContainer {
     this.#container.register(registrations);
   }
 
-  injectStore(store, initialReducers) {
+  injectStore(store, initialReducers, initialState) {
     const registrations = this.#container.registrations;
     Object.keys(registrations)
       .forEach(key => {
@@ -40,7 +40,7 @@ export default class ReduxDIContainer {
           service.setStore(store);
         }
         if (service instanceof BaseReducer) {
-          service.replaceReducer(key, initialReducers);
+          service.replaceReducer(key, initialReducers, initialState);
         }
         this.#services[key] = service;
       })
