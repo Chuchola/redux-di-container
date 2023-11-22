@@ -4,10 +4,10 @@ import {
 } from 'redux-di-container';
 
 import store, { reducers } from '../store';
-import CounterReducer from './CounterReducer';
-import DogsReducer from './DogsReducer';
+import CounterReducer from '../pages/DogsPage/CounterReducer';
+import DogsReducer from '../pages/DogsPage/DogsReducer';
 import AppService from './App.service';
-import DogsRestApiService from './DogsRestApi.service';
+import DogsRestApiService from '../pages/DogsPage/DogsRestApi.service';
 
 export const di = new ReduxDIContainer();
 di.registerServices([

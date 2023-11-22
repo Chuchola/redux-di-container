@@ -13,6 +13,7 @@
     "react": "file:../node_modules/react",
     "react-dom": "file:../node_modules/react-dom",
     "react-redux": "file:../node_modules/react-redux",
+    "react-router-dom": "^6.16.0",
     "react-scripts": "file:../node_modules/react-scripts",
     "redux": "file:../node_modules/redux"
   },
