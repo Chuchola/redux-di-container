@@ -137,7 +137,7 @@ export default connect(
 
 ## API
 
-BaseReducer class:
+**BaseReducer** class:
 
 `dispatchAction(mutatorFn, trace)` - Dispatch action.
 * `mutatorFn` - mutator function. See more [here](https://immerjs.github.io/immer/update-patterns).
@@ -151,7 +151,7 @@ BaseReducer class:
 `createSelector(state)` - Creates [reselect](https://github.com/reduxjs/reselect) selector.
 * `state` - app state.
 
-ReduxDIContainer class:
+**ReduxDIContainer** class:
 
 ```js
 
