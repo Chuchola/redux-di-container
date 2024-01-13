@@ -78,10 +78,12 @@ import CounterService from './features/counter/Counter.service';
 
 export const di = new ReduxDIContainer();
 
+// Registers new services in container
 di.registerServices([
   { key: 'counterService', class: CounterService },
 ]);
 
+// Injects store into container
 di.injectStore(store, reducers, {
   CounterService: {
     count: 100,
@@ -137,7 +139,7 @@ export default connect(
 
 ## API
 
-BaseReducer class:
+### BaseReducer class:
 
 `dispatchAction(mutatorFn, trace)` - Dispatch action.
 * `mutatorFn` - mutator function. See more [here](https://immerjs.github.io/immer/update-patterns).
@@ -151,11 +153,18 @@ BaseReducer class:
 `createSelector(state)` - Creates [reselect](https://github.com/reduxjs/reselect) selector.
 * `state` - app state.
 
-ReduxDIContainer class:
+### ReduxDIContainer class:
 
-```js
+`registerServices(services)` - registers services into container.
+* `services` - array of objects. Each object has shape like `{ key: string, class: ServiceClass }`.
 
-```
+`injectStore(store, reducers, initialState)` - injects store into container.
+* `store` - redux store.
+* `reducers` - other app reducers if any.
+* `initialState` - initial state for services.
+
+`getServices(key)` - gets service from container.
+* `key` - service key which uses in `registerService` method.
 
 ## Development
 
